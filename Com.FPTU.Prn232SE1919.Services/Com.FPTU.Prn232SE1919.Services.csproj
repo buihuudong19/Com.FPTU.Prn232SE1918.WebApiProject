@@ -7,10 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Extensions\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Com.FPTU.Prn232SE1819.Api.Caching\Com.FPTU.Prn232SE1819.Api.Caching.csproj" />
     <ProjectReference Include="..\Com.FPTU.Prn232SE1819.Api.Infrastructure\Com.FPTU.Prn232SE1819.Api.Infrastructure.csproj" />
     <ProjectReference Include="..\Com.FPTU.Prn232SE1918.Api.Application\Com.FPTU.Prn232SE1918.Api.Application.csproj" />

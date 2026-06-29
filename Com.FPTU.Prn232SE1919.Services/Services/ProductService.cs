@@ -129,7 +129,7 @@ public class ProductService : DataServiceBase<Product>, IProductService
         string key = string.Empty;
         foreach (var p in products)
         {
-            /*Lam sao sinh chuoi ky tu doi tuong p o tren?: solid.ecommerc.product.1*/
+            /*Lam sao sinh chuoi ky tu doi tuong p o tren?: fptu.ecommerce.product.1*/
             key = dataCached.GetKey(p, p => p.ProductId).ToLower();
             /*check xem key da duoc cached chua? neu chua thi set vao cache*/
             if (!dataCached.IsSet(key))
