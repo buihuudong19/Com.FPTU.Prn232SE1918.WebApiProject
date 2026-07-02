@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Primitives;
 using System.Collections.Concurrent;
+using System.Text.RegularExpressions;
 namespace Com.FPTU.Prn232SE1819.Api.Caching;
 
 public class DataCached : IDataCached
@@ -69,17 +70,33 @@ public class DataCached : IDataCached
 
     public IList<T> GetValues<T>(string pattern)
     {
-        throw new NotImplementedException();
+        /*Collect all data from the memcached*/
+        IList<T> values = new List<T>();
+        //get cache keys that matches pattern
+        var regex = new Regex(pattern, RegexOptions.Singleline | RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        var matchesKeys = _allKeys
+                            .Where(p => p.Value)
+                            .Select(p => p.Key)
+                            .Where(key => regex.IsMatch(key)).ToList();
+        //loop to get value
+        foreach (var key in matchesKeys)
+        {
+            _memoryCache.TryGetValue(key, out T? value);
+            if (value != null)
+                values.Add(value);
+        }
+
+        return values;
     }
 
     public bool IsSet(string key)
     {
-        throw new NotImplementedException();
+        return _allKeys.ContainsKey(key);
     }
 
     public void Remove(string key)
     {
-        throw new NotImplementedException();
+        _memoryCache.Remove(_removeKey(key));//vua remove trong dictionary va remove data luon
     }
 
     public void Set<T>(string key, T? value, int cacheTime)
@@ -105,5 +122,18 @@ public class DataCached : IDataCached
     {
         _allKeys.TryAdd(key, true);
         return key;
+    }
+    private string _removeKey(string key)
+    {
+        _tryRemoveKey(key);
+        return key;
+    }
+    private void _tryRemoveKey(string key)
+    {
+        //try to remove key from the dictionary
+        if (!_allKeys.TryRemove(key, out _))
+        {
+            _allKeys.TryUpdate(key, false, true);
+        }
     }
 }
